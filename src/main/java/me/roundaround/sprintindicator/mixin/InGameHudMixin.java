@@ -14,7 +14,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.texture.Sprite;
@@ -123,9 +122,9 @@ public abstract class InGameHudMixin {
     Arm arm = player.getMainArm().getOpposite();
 
     if (arm == Arm.LEFT) {
-      args.set(1, (int) args.get(1) + 26);
+      args.set(1, (int) args.get(1) + 24);
     } else {
-      args.set(1, (int) args.get(1) - 26);
+      args.set(1, (int) args.get(1) - 24);
     }
   }
 }
