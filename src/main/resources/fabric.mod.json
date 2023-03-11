@@ -19,8 +19,8 @@
     "sprintindicator.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.13.3",
-    "minecraft": "1.19.x",
+    "fabricloader": "*",
+    "minecraft": "1.19.3",
     "java": ">=17"
   }
 }
