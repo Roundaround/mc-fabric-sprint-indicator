@@ -33,12 +33,14 @@ public abstract class InGameHudMixin {
   private int scaledHeight;
 
   @Shadow
-  protected abstract PlayerEntity getCameraPlayer();
+  private PlayerEntity getCameraPlayer() {
+    return null;
+  }
 
   @Shadow
   public abstract TextRenderer getTextRenderer();
 
-  @Inject(method = "renderHotbar", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;disableBlend()V"))
+  @Inject(method = "renderHotbar", at = @At(value = "TAIL"))
   private void afterRenderHotbar(float partialTicks, MatrixStack matrixStack, CallbackInfo info) {
     PlayerEntity basePlayer = getCameraPlayer();
     if (!(basePlayer instanceof ClientPlayerEntity)) {
@@ -80,8 +82,7 @@ public abstract class InGameHudMixin {
         target = "Lnet/minecraft/client/option/GameOptions;getAttackIndicator()Lnet/minecraft/client/option/SimpleOption;"
       ),
       to = @At(
-        value = "INVOKE",
-        target = "Lcom/mojang/blaze3d/systems/RenderSystem;disableBlend()V"
+        value = "TAIL"
       )
     )
   )
@@ -111,8 +112,7 @@ public abstract class InGameHudMixin {
         target = "Lnet/minecraft/client/option/GameOptions;getAttackIndicator()Lnet/minecraft/client/option/SimpleOption;"
       ),
       to = @At(
-        value = "INVOKE",
-        target = "Lcom/mojang/blaze3d/systems/RenderSystem;disableBlend()V"
+        value = "TAIL"
       )
     )
   )
