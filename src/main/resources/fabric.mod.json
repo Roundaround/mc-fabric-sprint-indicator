@@ -3,12 +3,12 @@
   "id": "sprintindicator",
   "version": "${version}",
   "name": "Sprint Indicator",
-  "description": "Simple UI element showing whether you're currently sprinting.",
+  "description": "Simple UI element showing whether you're currently sprinting.\n${library}",
   "authors": [
     "Roundaround"
   ],
   "contact": {
-    "homepage": "https://modrinth.com/mod/roundaround-sprint-indicator",
+    "homepage": "https://modrinth.com/mod/sprint-indicator",
     "sources": "https://github.com/Roundaround/mc-fabric-sprint-indicator",
     "issues": "https://github.com/Roundaround/mc-fabric-sprint-indicator/issues"
   },
@@ -20,7 +20,7 @@
   ],
   "depends": {
     "fabricloader": "*",
-    "minecraft": "1.19.3",
+    "minecraft": "1.19.x",
     "java": ">=17"
   }
 }
