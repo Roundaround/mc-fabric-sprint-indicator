@@ -2,12 +2,12 @@ package me.roundaround.sprintindicator.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.StatusEffectSpriteManager;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Arm;
@@ -37,7 +37,7 @@ public abstract class InGameHudMixin {
   }
 
   @Inject(method = "renderHotbar", at = @At(value = "TAIL"))
-  private void afterRenderHotbar(float partialTicks, MatrixStack matrixStack, CallbackInfo info) {
+  private void afterRenderHotbar(float partialTicks, DrawContext drawContext, CallbackInfo info) {
     PlayerEntity basePlayer = getCameraPlayer();
     if (!(basePlayer instanceof ClientPlayerEntity player)) {
       return;
@@ -62,7 +62,7 @@ public abstract class InGameHudMixin {
         this.client.getStatusEffectSpriteManager();
     Sprite sprite = statusEffectSpriteManager.getSprite(StatusEffects.SPEED);
     RenderSystem.setShaderTexture(0, sprite.getAtlasId());
-    InGameHud.drawSprite(matrixStack, x, y, 0, 18, 18, sprite);
+    drawContext.drawSprite(x, y, 0, 18, 18, sprite);
   }
 
   // @formatter:off
@@ -70,7 +70,7 @@ public abstract class InGameHudMixin {
     method = "renderHotbar",
     at = @At(
       value = "INVOKE",
-      target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V",
+      target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V",
       ordinal = 0
     ),
     slice = @Slice(
@@ -100,7 +100,7 @@ public abstract class InGameHudMixin {
     method = "renderHotbar",
     at = @At(
       value = "INVOKE",
-      target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V",
+      target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V",
       ordinal = 1
     ),
     slice = @Slice(
