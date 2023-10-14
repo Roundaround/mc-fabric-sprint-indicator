@@ -26,10 +26,6 @@ public abstract class InGameHudMixin {
   @Final
   @Shadow
   private MinecraftClient client;
-  @Shadow
-  private int scaledWidth;
-  @Shadow
-  private int scaledHeight;
 
   @Shadow
   private PlayerEntity getCameraPlayer() {
@@ -37,7 +33,7 @@ public abstract class InGameHudMixin {
   }
 
   @Inject(method = "renderHotbar", at = @At(value = "TAIL"))
-  private void afterRenderHotbar(float partialTicks, DrawContext drawContext, CallbackInfo info) {
+  private void afterRenderHotbar(DrawContext context, float tickDelta, CallbackInfo ci) {
     PlayerEntity basePlayer = getCameraPlayer();
     if (!(basePlayer instanceof ClientPlayerEntity player)) {
       return;
@@ -49,20 +45,15 @@ public abstract class InGameHudMixin {
 
     Arm arm = player.getMainArm().getOpposite();
 
-    int x =
-        arm == Arm.LEFT ? (this.scaledWidth + 182) / 2 + 6 : (this.scaledWidth - 182) / 2 - 18 - 6;
-    int y = this.scaledHeight - 20;
+    int scaledWidth = context.getScaledWindowWidth();
+    int scaledHeight = context.getScaledWindowHeight();
+    int x = arm == Arm.LEFT ? (scaledWidth + 182) / 2 + 6 : (scaledWidth - 182) / 2 - 18 - 6;
+    int y = scaledHeight - 20;
 
-    RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-    RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-    RenderSystem.enableBlend();
-    RenderSystem.defaultBlendFunc();
-
-    StatusEffectSpriteManager statusEffectSpriteManager =
-        this.client.getStatusEffectSpriteManager();
+    StatusEffectSpriteManager statusEffectSpriteManager = this.client.getStatusEffectSpriteManager();
     Sprite sprite = statusEffectSpriteManager.getSprite(StatusEffects.SPEED);
-    RenderSystem.setShaderTexture(0, sprite.getAtlasId());
-    drawContext.drawSprite(x, y, 0, 18, 18, sprite);
+    context.setShaderColor(1f, 1f, 1f, 1f);
+    context.drawSprite(x, y, 0, 18, 18, sprite);
   }
 
   // @formatter:off
