@@ -70,7 +70,7 @@ public abstract class InGameHudMixin {
     method = "renderHotbar",
     at = @At(
       value = "INVOKE",
-      target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V",
+      target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V",
       ordinal = 0
     ),
     slice = @Slice(
@@ -86,6 +86,10 @@ public abstract class InGameHudMixin {
   // @formatter:on
   private void modifyArgsToFirstDrawTexture(Args args) {
     PlayerEntity player = getCameraPlayer();
+    if (player == null) {
+      return;
+    }
+
     Arm arm = player.getMainArm().getOpposite();
 
     if (arm == Arm.LEFT) {
@@ -100,8 +104,8 @@ public abstract class InGameHudMixin {
     method = "renderHotbar",
     at = @At(
       value = "INVOKE",
-      target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V",
-      ordinal = 1
+      target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIIIIIII)V",
+      ordinal = 0
     ),
     slice = @Slice(
       from = @At(
@@ -116,12 +120,16 @@ public abstract class InGameHudMixin {
   // @formatter:on
   private void modifyArgsToSecondDrawTexture(Args args) {
     PlayerEntity player = getCameraPlayer();
+    if (player == null) {
+      return;
+    }
+
     Arm arm = player.getMainArm().getOpposite();
 
     if (arm == Arm.LEFT) {
-      args.set(1, (int) args.get(1) + 24);
+      args.set(5, (int) args.get(5) + 24);
     } else {
-      args.set(1, (int) args.get(1) - 24);
+      args.set(5, (int) args.get(5) - 24);
     }
   }
 }
