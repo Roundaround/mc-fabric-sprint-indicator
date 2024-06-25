@@ -6,6 +6,7 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.StatusEffectSpriteManager;
 import net.minecraft.entity.effect.StatusEffects;
@@ -33,7 +34,7 @@ public abstract class InGameHudMixin {
   }
 
   @Inject(method = "renderHotbar", at = @At(value = "TAIL"))
-  private void afterRenderHotbar(DrawContext context, float tickDelta, CallbackInfo ci) {
+  private void afterRenderHotbar(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
     PlayerEntity basePlayer = getCameraPlayer();
     if (!(basePlayer instanceof ClientPlayerEntity player)) {
       return;
@@ -56,7 +57,6 @@ public abstract class InGameHudMixin {
     context.drawSprite(x, y, 0, 18, 18, sprite);
   }
 
-  // @formatter:off
   @ModifyArgs(
     method = "renderHotbar",
     at = @At(
@@ -74,7 +74,6 @@ public abstract class InGameHudMixin {
       )
     )
   )
-  // @formatter:on
   private void modifyArgsToFirstDrawTexture(Args args) {
     PlayerEntity player = getCameraPlayer();
     if (player == null) {
@@ -90,7 +89,6 @@ public abstract class InGameHudMixin {
     }
   }
 
-  // @formatter:off
   @ModifyArgs(
     method = "renderHotbar",
     at = @At(
@@ -108,7 +106,6 @@ public abstract class InGameHudMixin {
       )
     )
   )
-  // @formatter:on
   private void modifyArgsToSecondDrawTexture(Args args) {
     PlayerEntity player = getCameraPlayer();
     if (player == null) {
