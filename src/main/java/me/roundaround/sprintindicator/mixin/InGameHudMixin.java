@@ -1,26 +1,26 @@
 package me.roundaround.sprintindicator.mixin;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.StatusEffectSpriteManager;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Arm;
+import net.minecraft.util.Colors;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin {
@@ -53,71 +53,54 @@ public abstract class InGameHudMixin {
 
     StatusEffectSpriteManager statusEffectSpriteManager = this.client.getStatusEffectSpriteManager();
     Sprite sprite = statusEffectSpriteManager.getSprite(StatusEffects.SPEED);
-    context.setShaderColor(1f, 1f, 1f, 1f);
-    context.drawSprite(x, y, 0, 18, 18, sprite);
+    context.drawSpriteStretched(RenderLayer::getGuiTextured, sprite, x, y, 18, 18, Colors.WHITE);
   }
 
-  @ModifyArgs(
-    method = "renderHotbar",
-    at = @At(
+  @ModifyArg(
+      method = "renderHotbar", at = @At(
       value = "INVOKE",
-      target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V",
-      ordinal = 0
-    ),
-    slice = @Slice(
+      target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Ljava/util/function/Function;" +
+               "Lnet/minecraft/util/Identifier;IIII)V"
+  ), index = 2, slice = @Slice(
       from = @At(
-        value = "INVOKE",
-        target = "Lnet/minecraft/client/option/GameOptions;getAttackIndicator()Lnet/minecraft/client/option/SimpleOption;"
-      ),
-      to = @At(
-        value = "TAIL"
-      )
-    )
+          value = "INVOKE",
+          target = "Lnet/minecraft/client/option/GameOptions;getAttackIndicator()" +
+                   "Lnet/minecraft/client/option/SimpleOption;"
+      ), to = @At(
+      value = "TAIL"
   )
-  private void modifyArgsToFirstDrawTexture(Args args) {
-    PlayerEntity player = getCameraPlayer();
-    if (player == null) {
-      return;
-    }
-
-    Arm arm = player.getMainArm().getOpposite();
-
-    if (arm == Arm.LEFT) {
-      args.set(1, (int) args.get(1) + 24);
-    } else {
-      args.set(1, (int) args.get(1) - 24);
-    }
+  )
+  )
+  private int modifyAttackIndicatorBackgroundX(int original) {
+    return this.adjustAttackIndicatorX(original);
   }
 
-  @ModifyArgs(
-    method = "renderHotbar",
-    at = @At(
+  @ModifyArg(
+      method = "renderHotbar", at = @At(
       value = "INVOKE",
-      target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIIIIIII)V",
-      ordinal = 0
-    ),
-    slice = @Slice(
+      target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Ljava/util/function/Function;" +
+               "Lnet/minecraft/util/Identifier;IIIIIIII)V"
+  ), index = 6, slice = @Slice(
       from = @At(
-        value = "INVOKE",
-        target = "Lnet/minecraft/client/option/GameOptions;getAttackIndicator()Lnet/minecraft/client/option/SimpleOption;"
-      ),
-      to = @At(
-        value = "TAIL"
-      )
-    )
+          value = "INVOKE",
+          target = "Lnet/minecraft/client/option/GameOptions;getAttackIndicator()" +
+                   "Lnet/minecraft/client/option/SimpleOption;"
+      ), to = @At(
+      value = "TAIL"
   )
-  private void modifyArgsToSecondDrawTexture(Args args) {
+  )
+  )
+  private int modifyAttackIndicatorForegroundX(int original) {
+    return this.adjustAttackIndicatorX(original);
+  }
+
+  @Unique
+  private int adjustAttackIndicatorX(int original) {
     PlayerEntity player = getCameraPlayer();
     if (player == null) {
-      return;
+      return original;
     }
-
     Arm arm = player.getMainArm().getOpposite();
-
-    if (arm == Arm.LEFT) {
-      args.set(5, (int) args.get(5) + 24);
-    } else {
-      args.set(5, (int) args.get(5) - 24);
-    }
+    return original + (arm == Arm.LEFT ? 24 : -24);
   }
 }
