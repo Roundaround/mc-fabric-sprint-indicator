@@ -1,0 +1,8 @@
+{
+  "sprintindicator.config.title": "Sprint Indicator — Settings",
+  "sprintindicator.sprintEnabled.label": "Show sprint indicator",
+  "sprintindicator.crouchEnabled.label": "Show crouch indicator",
+  "sprintindicator.offset.label": "Icon offset",
+  "sprintindicator.offset.title": "Icon offset",
+  "sprintindicator.adjustAttackIndicator.label": "Shift attack indicator"
+}

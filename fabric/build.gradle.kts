@@ -10,6 +10,7 @@ allay {
   modrinth {
     dependencies {
       required("fabric-api")
+      optional("modmenu")
     }
   }
 }
@@ -17,4 +18,5 @@ allay {
 dependencies {
   libBundle(platform(libs.trove.bom))
   libBundle(libs.trove.fabric.core)
+  libBundle(libs.trove.config.gui)
 }

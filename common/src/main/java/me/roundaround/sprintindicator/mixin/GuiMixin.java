@@ -1,6 +1,8 @@
 package me.roundaround.sprintindicator.mixin;
 
 import me.roundaround.allay.api.MixinEnv;
+import me.roundaround.sprintindicator.config.SprintIndicatorConfig;
+import me.roundaround.trove.config.value.Position;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -34,7 +36,10 @@ public abstract class GuiMixin {
       return;
     }
 
-    if (!player.isSprinting()) {
+    SprintIndicatorConfig config = SprintIndicatorConfig.INSTANCE;
+    boolean sprinting = config.sprintEnabled.getValue() && player.isSprinting();
+    boolean crouching = config.crouchEnabled.getValue() && player.isCrouching();
+    if (!sprinting && !crouching) {
       return;
     }
 
@@ -42,10 +47,10 @@ public abstract class GuiMixin {
 
     int scaledWidth = context.guiWidth();
     int scaledHeight = context.guiHeight();
-    int x = arm == HumanoidArm.LEFT ? (scaledWidth + 182) / 2 + 6 : (scaledWidth - 182) / 2 - 18 - 6;
-    int y = scaledHeight - 20;
-
-    Identifier texture = Gui.getMobEffectSprite(MobEffects.SPEED);
+    Position offset = config.offset.getValue();
+    int x = (arm == HumanoidArm.LEFT ? (scaledWidth + 182) / 2 + 6 : (scaledWidth - 182) / 2 - 18 - 6) + offset.x();
+    int y = scaledHeight - 20 + offset.y();
+    Identifier texture = Gui.getMobEffectSprite(crouching ? MobEffects.SLOWNESS : MobEffects.SPEED);
     context.blitSprite(RenderPipelines.GUI_TEXTURED, texture, x, y, 18, 18);
   }
 
@@ -87,6 +92,14 @@ public abstract class GuiMixin {
 
   @Unique
   private int adjustAttackIndicatorX(int original) {
+    SprintIndicatorConfig config = SprintIndicatorConfig.INSTANCE;
+    // Only reserve room for the indicator when the user wants the nudge and at
+    // least one indicator can occupy the slot. (When the icon is moved far via
+    // the offset, turning this off is the escape hatch.)
+    if (!config.adjustAttackIndicator.getValue() ||
+        !(config.sprintEnabled.getValue() || config.crouchEnabled.getValue())) {
+      return original;
+    }
     Player player = this.getCameraPlayer();
     if (player == null) {
       return original;
