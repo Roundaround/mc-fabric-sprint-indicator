@@ -10,6 +10,7 @@ allay {
   homepage.set("https://modrinth.com/mod/sprint-indicator")
   repository.set("https://github.com/Roundaround/mc-fabric-sprint-indicator")
   issues.set("https://github.com/Roundaround/mc-fabric-sprint-indicator/issues")
+  logoFile.set("assets/sprintindicator/banner.png")
 
   modrinth {
     projectId.set("sprint-indicator")
