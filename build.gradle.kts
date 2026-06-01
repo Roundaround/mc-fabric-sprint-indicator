@@ -1,3 +1,22 @@
 plugins {
-  id("roundalib-gradle") version "2.0.0"
+  id("me.roundaround.allay")
+}
+
+allay {
+  displayName.set("Sprint Indicator")
+  description.set("Simple UI element showing whether you're currently sprinting.")
+  authors.set(listOf("Roundaround"))
+  license.set("MIT")
+  homepage.set("https://modrinth.com/mod/sprint-indicator")
+  repository.set("https://github.com/Roundaround/mc-fabric-sprint-indicator")
+  issues.set("https://github.com/Roundaround/mc-fabric-sprint-indicator/issues")
+
+  modrinth {
+    projectId.set("sprint-indicator")
+  }
+
+  release {
+    versionType.set("release")
+    sourcesJar.set(true)
+  }
 }

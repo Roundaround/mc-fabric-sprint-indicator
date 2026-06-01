@@ -31,7 +31,6 @@ bin/
 # fabric
 
 run/
-remappedSrc/
 
 # Ignore Gradle project-specific cache directory
 .gradle
