@@ -8,8 +8,8 @@ allay {
   authors.set(listOf("Roundaround"))
   license.set("MIT")
   homepage.set("https://modrinth.com/mod/sprint-indicator")
-  repository.set("https://github.com/Roundaround/mc-fabric-sprint-indicator")
-  issues.set("https://github.com/Roundaround/mc-fabric-sprint-indicator/issues")
+  repository.set("https://github.com/Roundaround/mc-sprint-indicator")
+  issues.set("https://github.com/Roundaround/mc-sprint-indicator/issues")
   logoFile.set("assets/sprintindicator/banner.png")
 
   modrinth {
